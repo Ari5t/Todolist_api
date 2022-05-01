@@ -17,8 +17,8 @@
         <% tasks.forEach( details => { %>
             <div>
                 <li><%= details.text %></li>
-                <a href="/edit/<%= details._id %>" class="edit"><span>Edit</span></a>
-                <a href="/remove/<%= details._id %>" class="remove"><span>Delete</span></a>
+                <a href="/edit/<%= details._id %>"><span>Edit</span></a>
+                <a href="/remove/<%= details._id %>"><span>Delete</span></a>
             </div>
         <% }) %>
     </ul>

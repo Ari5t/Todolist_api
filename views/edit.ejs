@@ -13,22 +13,22 @@
         <input type="text" name="text" placeholder="Завдання">
         <input type="submit" value="Відправити">
     </form>
-    <ul class="todo-list">
+    <ul>
         <% tasks.forEach(details => { %>
             <% if (details._id == idTask) { %>
-                 <li class="todo-list-item">
+                 <li >
                     <form action="/edit/<%= details._id %>" method="POST">
                         <input type="text" value="<%= details.text %>" name="text">
                         <button type="submit">Confirm</button>
-                        <a href="/" class="cancel">Cancel</a>
+                        <a href="/">Cancel</a>
                     </form>
                 </li>
             <% } else { %>
-                <li>
-                    <div class="todo-list-item-name"><%= details.text %></div>
-                    <a href="/edit/<%= details._id %>" class="edit"> <span class="fas fa-edit">Edit</span></a>
-                    <a href="/remove/<%= details._id %>" class="remove"> <span class="fas fa-times">Delete</span></a>
-                </li>
+                <div>
+                    <li><%= details.text %></li>
+                    <a href="/edit/<%= details._id %>"> <span>Edit</span></a>
+                    <a href="/remove/<%= details._id %>"> <span>Delete</span></a>
+                </div>
             <% } %>
         <% }) %>
     </ul>       
