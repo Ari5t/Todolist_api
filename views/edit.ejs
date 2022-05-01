@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ua">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список справ</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <h1>Список справ</h1>
+    <form method="post" action="/">
+        <input type="text" name="text" placeholder="Завдання">
+        <input type="submit" value="Відправити">
+    </form>
+    <ul class="todo-list">
+        <% tasks.forEach(details => { %>
+            <% if (details._id == idTask) { %>
+                 <li class="todo-list-item">
+                    <form action="/edit/<%= details._id %>" method="POST">
+                        <input type="text" value="<%= details.text %>" name="text">
+                        <button type="submit">Confirm</button>
+                        <a href="/" class="cancel">Cancel</a>
+                    </form>
+                </li>
+            <% } else { %>
+                <li>
+                    <div class="todo-list-item-name"><%= details.text %></div>
+                    <a href="/edit/<%= details._id %>" class="edit"> <span class="fas fa-edit">Edit</span></a>
+                    <a href="/remove/<%= details._id %>" class="remove"> <span class="fas fa-times">Delete</span></a>
+                </li>
+            <% } %>
+        <% }) %>
+    </ul>       
+</body>
+</html>

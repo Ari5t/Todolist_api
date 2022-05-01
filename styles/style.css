@@ -1,0 +1,15 @@
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+div{
+    padding: 2px;
+    display: flex;
+    flex-direction: row;
+}
+
+span{
+    margin-left: 5px;
+}
