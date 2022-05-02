@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const taskRouter = require('./routes/task-routers');
+const apiRouter = require('./routes/api-routers');
 const methodOverride = require('method-override');
 
 const app = express();
@@ -23,3 +24,4 @@ app.listen(PORT, (error) => {
   });
 
 app.use(taskRouter );
+app.use(apiRouter);
