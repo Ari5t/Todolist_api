@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const taskRouter = require('./routes/task-routers')
-const createPath = require('./helpers/create-path');
+const taskRouter = require('./routes/task-routers');
+const methodOverride = require('method-override');
 
 const app = express();
 const PORT = 3000;
@@ -16,6 +16,7 @@ app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({extended: false }));
 app.use(express.static('styles'));
+app.use(methodOverride('_method'));
 
 app.listen(PORT, (error) => {
     error ? console.log(error) : console.log(`listening port ${PORT}`);

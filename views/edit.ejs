@@ -4,33 +4,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список справ</title>
+    <title>Изменить <%= tasks.text%></title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <h1>Список справ</h1>
-    <form method="post" action="/">
-        <input type="text" name="text" placeholder="Завдання">
-        <input type="submit" value="Відправити">
+    <h1>Изменить <%= tasks.text%></h1>
+    <form method="post" action="/edit/<%= tasks.id %>?_method=PUT">
+        <input type="text" value="<%= tasks.text %>" name="text">
+        <input type="submit" value="Submit">
+        <a href="/">Cancel</a>
     </form>
-    <ul>
-        <% tasks.forEach(details => { %>
-            <% if (details._id == idTask) { %>
-                 <li >
-                    <form action="/edit/<%= details._id %>" method="POST">
-                        <input type="text" value="<%= details.text %>" name="text">
-                        <button type="submit">Confirm</button>
-                        <a href="/">Cancel</a>
-                    </form>
-                </li>
-            <% } else { %>
-                <div>
-                    <li><%= details.text %></li>
-                    <a href="/edit/<%= details._id %>"> <span>Edit</span></a>
-                    <a href="/remove/<%= details._id %>"> <span>Delete</span></a>
-                </div>
-            <% } %>
-        <% }) %>
-    </ul>       
 </body>
 </html>

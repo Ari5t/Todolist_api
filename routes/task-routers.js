@@ -3,8 +3,8 @@ const {
     getTask,
     postTask,
     updateGetTask,
-    updatePostTask,
-    deleteTask
+    updateTask,
+    deleteTask,
 } = require('../controllers/task-controllers');
 
 const router = express.Router(); 
@@ -15,13 +15,13 @@ router.get('/', getTask);
 //post
 router.post('/', postTask);
 
+//get update
+router.get('/edit/:id', updateGetTask);
+
 //update
-router
-  .route("/edit/:id")
-  .get(updateGetTask)
-  .post(updatePostTask);
+router.put('/edit/:id', updateTask);
 
 //delete
-router.route("/remove/:id").get(deleteTask);
+router.delete("/:id", deleteTask);
 
 module.exports = router;  
