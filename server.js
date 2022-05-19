@@ -6,6 +6,7 @@ const taskRouter = require('./routes/task-routers');
 const methodOverride = require('method-override');
 const api_auth_routes = require('./routes/api-auth-routes');
 const secureRoute = require('./routes/api-secure-auth-routes');
+const notsecureRoute = require('./routes/api-task-routes');
 
 const app = express();
 const PORT = 3000;
@@ -27,6 +28,7 @@ app.use(methodOverride('_method'));
 app.use(taskRouter);
 
 app.use('/auth', api_auth_routes);
+app.use('/api', notsecureRoute);
 app.use('/api', passport.authenticate('jwt', { session: false }), secureRoute);
 
 
