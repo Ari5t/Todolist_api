@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 
 const taskRouter = require('./routes/task-routers');
-const apiRouter = require('./routes/api-routers');
 const methodOverride = require('method-override');
 const api_auth_routes = require('./routes/api-auth-routes');
 const secureRoute = require('./routes/api-secure-auth-routes');
@@ -26,7 +25,6 @@ app.use(express.static('styles'));
 app.use(methodOverride('_method'));
 
 app.use(taskRouter);
-app.use(apiRouter);
 
 app.use('/auth', api_auth_routes);
 app.use('/api', passport.authenticate('jwt', { session: false }), secureRoute);
