@@ -16,9 +16,9 @@ const login = async (req, res, next) => {
       async (err, user, info) => {
         try {
           if (err || !user) {
-            const error = new Error('An error occurred.');
+            const error = new Error('Incorrect login or password');
 
-            return next(error);
+            return next(error.message);
           }
 
           req.login(
