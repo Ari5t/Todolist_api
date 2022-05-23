@@ -1,18 +1,39 @@
 <!DOCTYPE html>
 <html lang="ua">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Изменить <%= tasks.text%></title>
+    <title>Изменить <%= tasks.text%>
+    </title>
     <link rel="stylesheet" href="/style.css">
 </head>
+
 <body>
-    <h1>Изменить <%= tasks.text%></h1>
+    <h1>Изменить <%= tasks.text%>
+    </h1>
     <form method="post" action="/edit/<%= tasks.id %>?_method=PUT">
+        <input type="text" value="<%= tasks.id %>" name="id" hidden>
         <input type="text" value="<%= tasks.text %>" name="text">
         <input type="submit" value="Submit">
         <a href="/">Cancel</a>
     </form>
+    <!-- <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        const form = document.querySelector('form')
+
+        form.addEventListener('submit', event => {
+            event.preventDefault()
+
+            const id = event.target.elements.id.value
+            const text = event.target.elements.text.value
+
+            socket.emit('task:update', { id, text })
+        })
+    </script> -->
 </body>
+
 </html>

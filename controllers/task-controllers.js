@@ -3,56 +3,66 @@ const createPath = require('../helpers/create-path');
 
 const handleError = (res, error) => {
     console.log(error);
-    res.render(createPath('error'), { title: 'Error' });
+    // res.render(createPath('error'), { title: 'Error' });
+    res.send(`<p>${error.message}</p><pre>${error.stack}</pre>`)
 };
 
 const getTask = (req, res) => {
-    Task 
-    .find()
-    .then((tasks) => res.render(createPath('index'), { tasks }))
-    .catch((error) => {
-        console.log(error);
-        res.render(createPath('error'));
-    })
+    Task
+        .find()
+        .then((tasks) => res.render(createPath('index'), { tasks }))
+        .catch((error) => {
+            console.log(error);
+            res.render(createPath('error'));
+        })
 };
 
-const postTask = (req, res) =>{
+const postTask = (req, res) => {
     const { text } = req.body;
     const task = new Task({ text });
     task
-      .save()
-      .then((result) => res.redirect('/'))
-      .catch((error) => {
-        console.log(error);
-        res.render(createPath('error'));
-    })
+        .save()
+        .then((result) => res.redirect('/'))
+        .catch((error) => {
+            console.log(error);
+            res.render(createPath('error'));
+        })
 };
 
 const updateGetTask = (req, res) => {
     Task
-    .findById(req.params.id)
-    .then(tasks => res.render(createPath('edit'), {tasks}))
-    .catch((error) => handleError(res, error));
-};
-
-const updateTask = (req, res) => {
-    const { text } = req.body;
-    Task
-        .findByIdAndUpdate(req.params.id, { text })
-        .then((result) => res.redirect(`/`))
+        .findById(req.params.id)
+        .then(tasks => res.render(createPath('edit'), { tasks }))
         .catch((error) => handleError(res, error));
 };
 
-const deleteTask = (req, res) =>{
+const updateTask = async (req, res) => {
+    try {
+        const { text } = req.body;
+
+        await Task.findByIdAndUpdate(req.params.id, { text })
+
+        req.app.get('io').sockets.emit('task:updated', {
+            id: req.params.id,
+            text,
+        })
+
+        res.redirect(`/`)
+    } catch (error) {
+        handleError(res, error)
+    }
+};
+
+const deleteTask = (req, res) => {
     Task
-    .findByIdAndDelete(req.params.id)
-    .then((result) => {
-      res.sendStatus(200);
-    })
-    .catch((error) => {
-      console.log(error);
-      res.render(createPath('error'));
-    });
+        .findByIdAndDelete(req.params.id)
+        .then((result) => {
+            res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.log(error);
+            res.render(createPath('error'));
+        });
 };
 
 module.exports = {
