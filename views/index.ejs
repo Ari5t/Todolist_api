@@ -1,38 +1,61 @@
 <!DOCTYPE html>
 <html lang="ua">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список дел<</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Список дел</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <h1>Список дел</h1>
-    <form method="post" action="/">
-        <input type="text" name="text" placeholder="Задание">
-        <input type="submit" value="Отправить">
-    </form>
-    <ul>
-        <% tasks.forEach( details => { %>
-            <div>
-                <li><%= details.text %></li>
-                <a href="/edit/<%= details._id %>"><span>Edit</span></a>
-                <button data-id="<%= details._id %>">Delete</button>
-            </div>
-        <% }) %>
-    </ul>
-    <script>
-        document.addEventListener('click', (e) => {
-          const id = e.target?.dataset?.id || null;
-          if (id) {
-            fetch(`/${id}`, {
-              method: 'DELETE',
-            }).then(() => {
-              window.location.reload();
-            });
-          }
+  <h1>Список дел</h1>
+  <form method="post" action="/">
+    <input type="text" name="text" placeholder="Задание">
+    <input type="submit" value="Отправить">
+  </form>
+  <ul>
+    <% tasks.forEach( details=> { %>
+      <li>
+        <span data-task-id="<%= details._id %>">
+          <%= details.text %>
+        </span>
+        <a href="/edit/<%= details._id %>"><span>Edit</span></a>
+        <button data-id="<%= details._id %>">Delete</button>
+      </li>
+      <% }) %>
+  </ul>
+  <script>
+    document.addEventListener('click', (e) => {
+      const id = e.target?.dataset?.id || null;
+      if (id) {
+        fetch(`/${id}`, {
+          method: 'DELETE',
+        }).then(() => {
+          window.location.reload();
         });
-    </script>
-</body>
+      }
+    });
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+
+    socket.on('task:updated', task => {
+      try {
+        const text = document.querySelector(`[data-task-id="${task.id}"]`)
+
+        if (!text) {
+          throw new Error('text element not found.')
+        }
+
+        text.innerHTML = task.text
+      } catch (error) {
+        console.warn(error.message);
+      }
+    })
+  </script>
+</body>''
+
 </html>
