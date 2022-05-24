@@ -14,5 +14,16 @@
         <input type="submit" value="Submit">
         <a href="/">Cancel</a>
     </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        const form = document.querySelector('form')
+        form.addEventListener('submit', event => {
+            event.preventDefault()
+            const id = event.target.elements.id.value
+            const text = event.target.elements.text.value
+            socket.emit('task:update', { id, text })
+        })
+    </script>
 </body>
 </html>

@@ -36,11 +36,21 @@ const updateGetTask = (req, res) => {
 };
 
 const updateTask = (req, res) => {
-    const { text } = req.body;
-    Task
-        .findByIdAndUpdate(req.params.id, { text })
-        .then((result) => res.redirect(`/`))
-        .catch((error) => handleError(res, error));
+    try {
+        const { text } = req.body;
+
+        Task.findByIdAndUpdate(req.params.id, { text })
+
+        req.app.get('io').sockets.emit('task:updated', {
+            id: req.params.id,
+            text,
+        })
+
+        res.redirect(`/`)
+    } catch (error) {
+        handleError(res, error)
+    }
+
 };
 
 const deleteTask = (req, res) =>{
