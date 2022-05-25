@@ -10,6 +10,7 @@
 <body>
     <h1>Изменить <%= tasks.text%></h1>
     <form method="post" action="/edit/<%= tasks.id %>?_method=PUT">
+        <input type="text" value="<%= tasks.id %>" name="id" hidden>
         <input type="text" value="<%= tasks.text %>" name="text">
         <input type="submit" value="Submit">
         <a href="/">Cancel</a>
@@ -23,6 +24,7 @@
             const id = event.target.elements.id.value
             const text = event.target.elements.text.value
             socket.emit('task:update', { id, text })
+            window.location.href = "/"
         })
     </script>
 </body>

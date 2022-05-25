@@ -3,7 +3,7 @@ const createPath = require('../helpers/create-path');
 
 const handleError = (res, error) => {
     console.log(error);
-    res.render(createPath('error'), { title: 'Error' });
+    res.send(`<p>${error.message}</p><pre>${error.stack}</pre>`)
 };
 
 const getTask = (req, res) => {
@@ -35,18 +35,15 @@ const updateGetTask = (req, res) => {
     .catch((error) => handleError(res, error));
 };
 
-const updateTask = (req, res) => {
+const updateTask = async(req, res) => {
     try {
         const { text } = req.body;
 
-        Task.findByIdAndUpdate(req.params.id, { text })
-
         req.app.get('io').sockets.emit('task:updated', {
             id: req.params.id,
-            text,
+            text
         })
-
-        res.redirect(`/`)
+        
     } catch (error) {
         handleError(res, error)
     }

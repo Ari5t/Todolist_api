@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const http = require('http')
 
+const Task = require('./models/task');
 const taskRouter = require('./routes/task-routers');
 const apiRouter = require('./routes/api-routers');
 const methodOverride = require('method-override');
@@ -23,11 +24,18 @@ app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({extended: false }));
 app.use(express.static('styles'));
-app.use(express.static('node_modules'));
+app.use(express.static('viwes'));
 app.use(methodOverride('_method'));
 
 io.on('connection', socket => {
   console.log('New connection', socket.id)
+
+  socket.on('task:update', async ({ id, text }) => {
+    await Task.findByIdAndUpdate(id, { text })
+    console.log("OK")
+
+    socket.broadcast.emit('task:updated', { id, text })
+  })
 })
 
 server.listen(PORT, (error) => {

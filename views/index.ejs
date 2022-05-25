@@ -16,7 +16,7 @@
     <ul>
         <% tasks.forEach( details => { %>
           <li><div>
-            <span><%= details.text %></span>
+            <span data-task-id="<%= details._id %>"><%= details.text %></span>
             <a href="/edit/<%= details._id %>"><span>Edit</span></a>
             <button data-id="<%= details._id %>">Delete</button>
         </div></li>
@@ -36,8 +36,10 @@
         });
     </script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="test.js"></script>
     <script>
       const socket = io();
+
       socket.on('task:updated', task => {
         try {
           const text = document.querySelector(`[data-task-id="${task.id}"]`)
