@@ -36,30 +36,11 @@ const updateGetTask = (req, res) => {
 };
 
 const updateTask = async(req, res) => {
-    try {
-        const { text } = req.body;
-
-        req.app.get('io').sockets.emit('task:updated', {
-            id: req.params.id,
-            text
-        })
-        
-    } catch (error) {
-        handleError(res, error)
-    }
 
 };
 
 const deleteTask = (req, res) =>{
-    Task
-    .findByIdAndDelete(req.params.id)
-    .then((result) => {
-      res.sendStatus(200);
-    })
-    .catch((error) => {
-      console.log(error);
-      res.render(createPath('error'));
-    });
+    
 };
 
 module.exports = {

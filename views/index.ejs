@@ -15,26 +15,14 @@
     </form>
     <ul>
         <% tasks.forEach( details => { %>
-          <li><div>
+          <li id="<%= details._id %>"><div>
             <span data-task-id="<%= details._id %>"><%= details.text %></span>
             <a href="/edit/<%= details._id %>"><span>Edit</span></a>
-            <button data-id="<%= details._id %>">Delete</button>
+            <button data-id="<%= details._id %>" class="delete">Delete</button>
         </div></li>
             
         <% }) %>
     </ul>
-    <script>
-        document.addEventListener('click', (e) => {
-          const id = e.target?.dataset?.id || null;
-          if (id) {
-            fetch(`/${id}`, {
-              method: 'DELETE',
-            }).then(() => {
-              window.location.reload();
-            });
-          }
-        });
-    </script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/scripts/socket_index.js"></script>
 </body>

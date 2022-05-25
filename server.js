@@ -32,9 +32,16 @@ io.on('connection', socket => {
 
   socket.on('task:update', async ({ id, text }) => {
     await Task.findByIdAndUpdate(id, { text })
-    console.log("OK")
+    console.log("task:update")
 
     socket.broadcast.emit('task:updated', { id, text })
+  })
+
+  socket.on('task:delete', async({id}) => {
+    console.log("task:delete " + id)
+    await Task.findByIdAndDelete(id)
+    socket.broadcast.emit('task:deleted', {id})
+    console.log('delete')
   })
 })
 
