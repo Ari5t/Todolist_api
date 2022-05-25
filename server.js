@@ -23,7 +23,7 @@ mongoose
 app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({extended: false }));
-app.use(express.static('styles'));
+app.use(express.static('public'));
 app.use(express.static('viwes'));
 app.use(methodOverride('_method'));
 
