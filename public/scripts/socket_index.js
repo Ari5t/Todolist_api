@@ -1,5 +1,31 @@
 const socket = io();
+let btnDeletes = document.querySelectorAll(".delete");
 
+//create
+const form = document.querySelector('form')
+
+form.addEventListener('submit', event => {
+    event.preventDefault()
+    const text = event.target.elements.text.value
+    socket.emit('task:create', { text })
+    window.location.href = "/"
+})
+
+//created
+socket.on('task:created', ({ id, text }) => {
+    const li = document.createElement("li")
+    const ul = document.querySelector("ul")
+
+    li.id = id
+    li.innerHTML = `
+    <div>
+        <span data-task-id="${id}">${text}</span>
+        <a href="/edit/${id}"><span>Edit</span></a>
+        <button data-id="${id}" class="delete">Delete</button>
+    </div>
+    `
+    ul.append(li);
+})
 
 //update
 socket.on('task:updated', task => {
@@ -15,20 +41,17 @@ socket.on('task:updated', task => {
 })
 
 //delete
-const btnDeletes = document.querySelectorAll(".delete");
-for (let btnDelete of btnDeletes) {
-    btnDelete.addEventListener("click", () => {
-        const id = btnDelete.dataset.id
-        socket.emit('task:delete', {id})
-        delete_obj(id)
-    });
-}
+document.getElementById("ul").addEventListener("click", (event) => {
+    const id = event.target.dataset.id
+    socket.emit('task:delete', {id})
+    del_obj(id)
+  });
 
 socket.on('task:deleted', ({id}) => {
-    delete_obj(id)
+    del_obj(id)
 })
 
-function delete_obj(id){
+function del_obj(id){
     const element = document.getElementById(id);
-        element.remove();
+    element.remove();
 }

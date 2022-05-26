@@ -16,16 +16,16 @@ const getTask = (req, res) => {
     })
 };
 
-const postTask = (req, res) =>{
-    const { text } = req.body;
-    const task = new Task({ text });
-    task
-      .save()
-      .then((result) => res.redirect('/'))
-      .catch((error) => {
-        console.log(error);
-        res.render(createPath('error'));
-    })
+const postTask = async(req, res) =>{
+    try{
+        const { text } = req.body;
+        const task = new Task({ text });
+        await task.save()
+        
+        res.redirect('/')
+    }catch(error) {
+        handleError(res, error)
+    }
 };
 
 const updateGetTask = (req, res) => {

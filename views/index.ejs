@@ -13,7 +13,7 @@
         <input type="text" name="text" placeholder="Задание">
         <input type="submit" value="Отправить">
     </form>
-    <ul>
+    <ul id="ul">
         <% tasks.forEach( details => { %>
           <li id="<%= details._id %>"><div>
             <span data-task-id="<%= details._id %>"><%= details.text %></span>

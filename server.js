@@ -30,6 +30,16 @@ app.use(methodOverride('_method'));
 io.on('connection', socket => {
   console.log('New connection', socket.id)
 
+  socket.on('task:create', async ({ text }) => {
+
+    const task = new Task({ text });
+    const id = task._id
+
+    await task.save()
+
+    socket.broadcast.emit('task:created', { id, text })
+  })
+
   socket.on('task:update', async ({ id, text }) => {
     await Task.findByIdAndUpdate(id, { text })
     console.log("task:update")
@@ -38,10 +48,10 @@ io.on('connection', socket => {
   })
 
   socket.on('task:delete', async({id}) => {
-    console.log("task:delete " + id)
     await Task.findByIdAndDelete(id)
+    console.log('task:delete')
+
     socket.broadcast.emit('task:deleted', {id})
-    console.log('delete')
   })
 })
 
