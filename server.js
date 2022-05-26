@@ -21,6 +21,7 @@ mongoose
   .catch((error) => console.log(error));
 
 app.set('view engine', 'ejs');
+app.set('io', io)
 
 app.use(express.urlencoded({extended: false }));
 app.use(express.static('public'));
@@ -62,3 +63,4 @@ server.listen(PORT, (error) => {
 app.use(taskRouter);
 app.use(apiRouter);
 
+module.exports = io

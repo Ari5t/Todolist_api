@@ -8,7 +8,7 @@ form.addEventListener('submit', event => {
     event.preventDefault()
     const text = event.target.elements.text.value
     socket.emit('task:create', { text })
-    window.location.href = "/"
+    window.location.reload()
 })
 
 //created
@@ -42,9 +42,11 @@ socket.on('task:updated', task => {
 
 //delete
 document.getElementById("ul").addEventListener("click", (event) => {
+  if (event.target.className === 'delete'){
     const id = event.target.dataset.id
     socket.emit('task:delete', {id})
     del_obj(id)
+  }
   });
 
 socket.on('task:deleted', ({id}) => {

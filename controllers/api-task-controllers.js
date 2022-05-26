@@ -18,28 +18,50 @@ const getTask = (req, res) => {
     .catch((error) => handleError(res, error));
 };
 
-const postTask = (req, res) =>{
-    const { text } = req.body;
-    const task = new Task({ text });
-    task
-      .save()
-      .then((task) => res.status(200).json(task))
-      .catch((error) => handleError(res, error));
+const postTask = async(req, res) =>{
+    try{
+        const { text } = req.body;
+        const task = new Task({ text });
+        const id = task._id
+
+        req.app.get('io').sockets.emit('task:created', { id, text })
+
+        await task.save()
+
+        res.status(200).json(task)
+
+        
+    }catch(error) {
+        handleError(res, error)
+    }
+    
 };
 
-const updateTask = (req, res) => {
-    const { text } = req.body;
-    Task
-        .findByIdAndUpdate(req.params.id, { text }, { new: true })
-        .then((task) => res.status(200).json(task))
-        .catch((error) => handleError(res, error));
+const updateTask = async(req, res) => {
+    try{
+        const { text } = req.body;
+        const id = req.params.id;
+
+        req.app.get('io').sockets.emit('task:updated', { id, text })
+        await Task.findByIdAndUpdate(id, { text }, { new: true })
+            .then((task) => res.status(200).json(task))
+
+    }catch(error) {
+        handleError(res, error)
+    }
 };
 
-const deleteTask = (req, res) =>{
-    Task
-    .findByIdAndDelete(req.params.id)
-    .then(() => res.status(200).json(req.params.id))
-    .catch((error) => handleError(res, error));
+const deleteTask = async(req, res) =>{
+    try{
+        const id = req.params.id;
+
+        req.app.get('io').sockets.emit('task:deleted', {id})
+        await Task.findByIdAndDelete(id)
+
+        res.status(200).json(req.params.id)
+    }catch(error) {
+        handleError(res, error)
+    }
 };
 
 module.exports = {
