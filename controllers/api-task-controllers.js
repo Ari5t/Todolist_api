@@ -24,6 +24,8 @@ const postTask = async(req, res) =>{
         const task = new Task({ text });
         const id = task._id
 
+        if (text <= 0){throw new Error("Заполните поле с текстом");}
+
         req.app.get('io').sockets.emit('task:created', { id, text })
 
         await task.save()
@@ -41,6 +43,8 @@ const updateTask = async(req, res) => {
     try{
         const { text } = req.body;
         const id = req.params.id;
+
+        if (text <= 0){throw new Error("Заполните поле с текстом");}
 
         req.app.get('io').sockets.emit('task:updated', { id, text })
         await Task.findByIdAndUpdate(id, { text }, { new: true })
