@@ -1,0 +1,7 @@
+{
+  "ignore": [],
+  "delay": 2500,
+  "execMap": {
+    "ts": "./node_modules/.bin/ts-node"
+  }
+}

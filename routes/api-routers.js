@@ -1,27 +1,12 @@
-const express = require('express');
-const {
-    getTask,
-    getTasks,
-    postTask,
-    updateTask,
-    deleteTask
-} = require('../controllers/api-task-controllers');
+import { Router } from 'express'
+import APITaskController from '../controllers/APITaskController'
 
-const router = express.Router(); 
+import { APIErrorHandler } from '../errors'
 
-//get tasks
-router.get('/api/tasks', getTasks);
-
-//get task
-router.get('/api/task/:id', getTask);
-
-//post
-router.post('/api/task', postTask);
-
-//update
-router.put('/api/task/:id', updateTask);
-
-//delete
-router.delete("/api/task/:id", deleteTask);
-
-module.exports = router;  
+export default Router()
+    .get('/api/tasks', APITaskController.getTasks)
+    .get('/api/task/:id', APITaskController.getTask)
+    .post('/api/task', APITaskController.postTask)
+    .put('/api/task/:id', APITaskController.updateTask)
+    .delete("/api/task/:id", APITaskController.deleteTask)
+    .use(APIErrorHandler)
