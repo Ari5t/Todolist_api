@@ -2,9 +2,9 @@
   "name": "task",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "server.ts",
   "scripts": {
-    "server": "nodemon server.js"
+    "start": "nodemon server.ts"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +19,8 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
+    "@types/method-override": "^0.0.32",
+    "@types/mongoose": "^5.11.97",
     "nodemon": "^2.0.16"
   }
 }

@@ -1,5 +1,7 @@
-import express from 'express'
+import express, { response } from 'express'
 import { Server } from 'socket.io'
+
+import { Request, Response } from "express";
 
 import mongoose from 'mongoose'
 import http from 'http'
@@ -17,10 +19,14 @@ const db = 'mongodb+srv://Yaroslav:qwerrewq@clus.mnkjs.mongodb.net/NodeTask?retr
 const server = http.createServer(app)
 const io = new Server(server)
 
-mongoose
-  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to DB'))
-  .catch((error) => console.log(error))
+
+try{
+  mongoose.connect(db)
+  // , { useNewUrlParser: true, useUnifiedTopology: true }
+  console.log('Connected to DB')
+}catch (error){
+  res: response.status(500).json({ error })
+}
 
 app.set('view engine', 'ejs')
 app.set('io', io)
@@ -56,8 +62,16 @@ io.on('connection', socket => {
   })
 })
 
-server.listen(PORT, (error) => {
-  error ? console.log(error) : console.log(`listening port ${PORT}`)
+server.listen(PORT, () => {
+  try{
+    console.log(`listening port ${PORT}`)
+  }catch(error){
+    console.log(error)
+  }
+
+  
+
+  // error ? console.log(error) : console.log(`listening port ${PORT}`)
 })
 
 app.use(taskRouter)

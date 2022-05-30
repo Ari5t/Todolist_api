@@ -7,7 +7,9 @@ const form = document.querySelector('form')
 form.addEventListener('submit', event => {
   event.preventDefault()
   const text = event.target.elements.text.value
-  if (text <= 0) return alert("Заполните поле с текстом")
+  if (text <= 0){
+    return alert("Заполните поле с текстом")
+  }
   socket.emit('task:create', { text })
   window.location.reload()
 })
@@ -46,6 +48,7 @@ document.getElementById("ul").addEventListener("click", (event) => {
   if (event.target.className === 'delete') {
     const id = event.target.dataset.id
     socket.emit('task:delete', { id })
+    del_obj(id)
   }
 });
 

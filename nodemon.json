@@ -2,6 +2,7 @@
   "ignore": [],
   "delay": 2500,
   "execMap": {
-    "ts": "./node_modules/.bin/ts-node"
+    "ts": "./node_modules/.bin/ts-node",
+    "js": "./node_modules/.bin/ts-node"
   }
 }

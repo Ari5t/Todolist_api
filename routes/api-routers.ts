@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import APITaskController from '../controllers/APITaskController'
 
-import { APIErrorHandler } from '../errors'
+import { APIErrorHandler } from '../errors/api-error'
 
 export default Router()
     .get('/api/tasks', APITaskController.getTasks)
