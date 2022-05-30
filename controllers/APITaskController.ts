@@ -1,5 +1,7 @@
 import { Request, Response } from 'express'
 
+import { validationResult } from 'express-validator';
+
 import Task from '../models/task'
 
 class APITaskController {
@@ -16,13 +18,19 @@ class APITaskController {
     }
 
     public async postTask(req: Request, res: Response) {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
         const { text } = req.body
         const task = new Task({ text })
         const id = task._id
 
-        if (typeof text !== 'string' || text.length <= 0) {
-            throw new Error("Заполните поле с текстом")
-        }
+        // if (typeof text !== 'string' || text.length <= 0) {
+        //     throw new Error("Заполните поле с текстом")
+        // }
 
         req.app.get('io').sockets.emit('task:created', { id, text })
 
@@ -32,12 +40,9 @@ class APITaskController {
     }
 
     public async updateTask(req: Request, res: Response) {
+
         const { text } = req.body
         const id = req.params.id
-
-        if (text <= 0) {
-            throw new Error("Заполните поле с текстом")
-        }
 
         req.app.get('io').sockets.emit('task:updated', { id, text })
         const task = await Task.findByIdAndUpdate(id, { text }, { new: true })
@@ -46,6 +51,7 @@ class APITaskController {
     }
 
     public async deleteTask(req: Request, res: Response) {
+
         const id = req.params.id
 
         req.app.get('io').sockets.emit('task:deleted', { id })

@@ -1,7 +1,7 @@
 import express, { response } from 'express'
 import { Server } from 'socket.io'
 
-import { Request, Response } from "express";
+import 'dotenv/config'
 
 import mongoose from 'mongoose'
 import http from 'http'
