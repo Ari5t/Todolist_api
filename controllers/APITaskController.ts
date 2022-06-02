@@ -1,64 +1,53 @@
-import { Request, Response } from 'express'
+import { Request, Response } from "express";
 
-import { validationResult } from 'express-validator';
+import { validationResult } from "express-validator";
 
-import Task from '../models/task'
+import Task from "../models/task";
+import socket_task from "../service/socket_task";
 
 class APITaskController {
-    public async getTasks(req: Request, res: Response) {
-        const tasks = await Task.find()
+  public async getTasks(req: Request, res: Response) {
+    const tasks = await Task.find();
 
-        res.status(200).json(tasks)
+    res.status(200).json(tasks);
+  }
+
+  public getTask(req: Request, res: Response) {
+    const task = Task.findById(req.params.id);
+
+    res.status(200).json(task);
+  }
+
+  public async postTask(req: Request, res: Response) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
+    const { text } = req.body;
 
-    public getTask(req: Request, res: Response) {
-        Task
-            .findById(req.params.id)
-            .then((task) => res.status(200).json(task))
-    }
+    const task = socket_task.create(text)
 
-    public async postTask(req: Request, res: Response) {
+    res.status(200).json(task);
+  }
 
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
+  public async updateTask(req: Request, res: Response) {
+    const { text } = req.body;
+    const id = req.params.id;
 
-        const { text } = req.body
-        const task = new Task({ text })
-        const id = task._id
+    req.app.get("io").sockets.emit("task:updated", { id, text });
+    const task = await Task.findByIdAndUpdate(id, { text }, { new: true });
 
-        // if (typeof text !== 'string' || text.length <= 0) {
-        //     throw new Error("Заполните поле с текстом")
-        // }
+    res.status(200).json(task);
+  }
 
-        req.app.get('io').sockets.emit('task:created', { id, text })
+  public async deleteTask(req: Request, res: Response) {
+    const id = req.params.id;
 
-        await task.save()
+    req.app.get("io").sockets.emit("task:deleted", { id });
+    await Task.findByIdAndDelete(id);
 
-        res.status(200).json(task)
-    }
-
-    public async updateTask(req: Request, res: Response) {
-
-        const { text } = req.body
-        const id = req.params.id
-
-        req.app.get('io').sockets.emit('task:updated', { id, text })
-        const task = await Task.findByIdAndUpdate(id, { text }, { new: true })
-
-        res.status(200).json(task)
-    }
-
-    public async deleteTask(req: Request, res: Response) {
-
-        const id = req.params.id
-
-        req.app.get('io').sockets.emit('task:deleted', { id })
-        await Task.findByIdAndDelete(id)
-
-        res.status(200).json(req.params.id)
-    }
+    res.status(200).json(req.params.id);
+  }
 }
 
-export default new APITaskController()
+export default new APITaskController();
