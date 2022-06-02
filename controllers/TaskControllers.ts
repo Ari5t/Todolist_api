@@ -12,7 +12,7 @@ class TaskControllers {
     const task = new Task({ text });
     await task.save();
 
-    res.status(200).json(task);
+    res.status(201).json(task);
   }
 
   public async updateGetTask(req: Request, res: Response) {
@@ -27,7 +27,7 @@ class TaskControllers {
     req.app.get("io").sockets.emit("task:updated", { id, text });
     const task = await Task.findByIdAndUpdate(id, { text }, { new: true });
 
-    res.status(200).json(task);
+    res.status(202).json(task);
   }
 
   public async deleteTask(req: Request, res: Response) {
@@ -35,7 +35,7 @@ class TaskControllers {
     await Task.findByIdAndDelete(id);
 
     req.app.get("io").sockets.broadcast.emit("task:deleted", { id });
-    res.status(200).json(req.params.id);
+    res.status(202).json(req.params.id);
   }
 }
 

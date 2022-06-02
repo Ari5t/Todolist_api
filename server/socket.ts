@@ -3,7 +3,6 @@ import { Server } from 'socket.io'
 import Task from '../models/task'
 import server from './http'
 import app from './app'
-import socket_task from '../service/socket_task'
 
 const io = new Server(server)
 
@@ -13,7 +12,12 @@ io.on('connection', socket => {
   console.log('New connection', socket.id)
 
   socket.on('task:create', async ({ text }) => {
-    socket_task.create(text)
+    const task = new Task({ text });
+    const id = task._id;
+
+    socket.broadcast.emit("task:created", { id, text });
+
+    await task.save();
   })
 
   socket.on('task:update', async ({ id, text }) => {
