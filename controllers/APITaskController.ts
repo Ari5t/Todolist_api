@@ -1,8 +1,10 @@
-import { Request, Response } from "express";
+import { Request, Response, text } from "express";
 
 import { validationResult } from "express-validator";
 
 import Task from "../models/task";
+import socket_task from "../service/socket_task"
+
 
 class APITaskController {
   public async getTasks(req: Request, res: Response) {
@@ -24,13 +26,8 @@ class APITaskController {
     }
     const { text } = req.body;
 
-    const task = new Task({ text });
-    const id = task._id;
-
-    req.app.get('io').sockets.emit("task:created", { id, text });
-
-    await task.save();
-
+    const task = await socket_task.create(text)
+    
     res.status(201).json(task);
   }
 
@@ -43,8 +40,7 @@ class APITaskController {
     const { text } = req.body;
     const id = req.params.id;
 
-    req.app.get("io").sockets.emit("task:updated", { id, text });
-    const task = await Task.findByIdAndUpdate(id, { text }, { new: true });
+    const task = await socket_task.update(text, id)
 
     res.status(202).json(task);
   }
@@ -52,8 +48,7 @@ class APITaskController {
   public async deleteTask(req: Request, res: Response) {
     const id = req.params.id;
 
-    req.app.get("io").sockets.emit("task:deleted", { id });
-    await Task.findByIdAndDelete(id);
+    socket_task.delete(id)
 
     res.status(202).json(req.params.id);
   }

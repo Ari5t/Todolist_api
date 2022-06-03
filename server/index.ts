@@ -7,9 +7,9 @@ const url = `${process.env.DB_PROTOCOL}${process.env.DB_USERNAME }:${process.env
 
 const main = async () => {
     await mongo(url)
+    require('./socket')
     require('./app')
     require('./http')
-    require('./socket')
   }
   
   main()

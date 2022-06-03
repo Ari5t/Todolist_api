@@ -10,7 +10,11 @@ class TaskControllers {
   public async postTask(req: Request, res: Response) {
     const { text } = req.body;
     const task = new Task({ text });
+    const id = task._id;
     await task.save();
+    
+
+    req.app.get("io").sockets.emit("task:created", { id, text });
 
     res.status(201).json(task);
   }
