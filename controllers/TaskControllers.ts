@@ -12,7 +12,6 @@ class TaskControllers {
     const task = new Task({ text });
     const id = task._id;
     await task.save();
-    
 
     req.app.get("io").sockets.emit("task:created", { id, text });
 

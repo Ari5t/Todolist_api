@@ -1,4 +1,4 @@
-import socket_task from '../service/socket_task'
+import socket_task from '../services/SoketTask'
 import io from './io'
 
 io.on('connection', socket => {
