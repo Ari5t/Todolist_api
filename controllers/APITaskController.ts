@@ -1,9 +1,7 @@
-import { Request, Response, text } from "express";
-
-import { validationResult } from "express-validator";
+import { Request, Response } from "express";
 
 import Task from "../models/task";
-import socket_task from "../service/socket_task"
+import socket_task from "../services/SoketTask"
 
 
 class APITaskController {
@@ -20,10 +18,6 @@ class APITaskController {
   }
 
   public async postTask(req: Request, res: Response) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
     const { text } = req.body;
 
     const task = await socket_task.create(text)
@@ -32,11 +26,6 @@ class APITaskController {
   }
 
   public async updateTask(req: Request, res: Response) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
-
     const { text } = req.body;
     const id = req.params.id;
 
