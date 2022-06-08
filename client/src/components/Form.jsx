@@ -1,12 +1,14 @@
 import React, {useState} from "react";
+import axion from "axios"
 
-const Form = () => {
-    const [task, setTask] = useState('')
+const Form = ({create }) => {
+    const [task, newTask] = useState('')
 
-    const addNewTask = (e) => {
+    const addNewTask = async(e) => {
         e.preventDefault()
-        console.log(task);
-        setTask('')
+        const addNewTask = await axion.post('http://localhost:3000/api/task', {text: task})
+        create(addNewTask.data)
+        newTask('')
     }
 
 
@@ -15,7 +17,7 @@ const Form = () => {
       <form action="/">
         <input 
         value={task}
-        onChange={e => setTask(e.target.value)}
+        onChange={e => newTask(e.target.value)}
         type="text" 
         name="text"
         placeholder="Задание"
