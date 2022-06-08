@@ -1,5 +1,6 @@
 import express from 'express'
 import methodOverride from 'method-override'
+import CORS from '../middleware/CORS'
 
 import router from '../routes'
 
@@ -12,6 +13,7 @@ app.use(express.json())
 app.use(express.static('public'))
 app.use(express.static('viwes'))
 app.use(methodOverride('_method'))
+app.use(CORS)
 
 app.use(router)
 
