@@ -6,7 +6,7 @@ const Tasks = (props) => {
     <li id={task._id}><div>
       <span>{task.text}</span>
       <button>Edit</button>
-      <button>Delete</button>
+      <button onClick={() => props.remove(task)}>Delete</button>
     </div></li>
     
   );

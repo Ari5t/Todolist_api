@@ -1,8 +1,7 @@
 import React from 'react';
 import Tasks from './Tasks';
 
-const TaskList = ({tasks}) => {
-
+const TaskList = ({tasks, removes}) => {
   if (!tasks.length){
     return(
       <h1 style={{textAlign: 'center'}}>
@@ -14,7 +13,7 @@ const TaskList = ({tasks}) => {
     <div>
       <ul>
         {tasks.map((task) => 
-          <Tasks task={task} key={task._id}/>
+          <Tasks task={task} remove={removes} key={task._id}/>
         )}
       </ul>
     </div>
