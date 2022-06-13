@@ -13,15 +13,15 @@ import { useCallback } from 'react'
 
 export interface ItemProps {
   children: string
-  index: number
+  id: number
 
-  onRemove: (index: number) => void
-  onSave: (text: string, index: number) => void
+  onRemove: (id: number) => void
+  onSave: (text: string, id: number) => void
 }
 
 export const Item: FC<ItemProps> = ({
   children,
-  index,
+  id,
 
   onRemove,
   onSave,
@@ -31,14 +31,15 @@ export const Item: FC<ItemProps> = ({
   const handleCancel = useCallback(() => setIsEdit(false), [])
 
   const handleSave = useCallback((text: string) => {
-    onSave(text, index)
+    onSave(text, id)
     setIsEdit(false)
-  }, [index, onSave])
+  }, [id, onSave])
+
   const handleRemove = useCallback<MouseEventHandler<HTMLButtonElement>>(event => {
     event.stopPropagation()
 
-    onRemove(index)
-  }, [index, onRemove])
+    onRemove(id)
+  }, [id, onRemove])
 
   if (isEdit) {
     return (
@@ -51,7 +52,7 @@ export const Item: FC<ItemProps> = ({
       <ListItemButton onClick={handleEdit}>
         <ListItemText primary={children} />
         <Tooltip title="Remove">
-          <IconButton color="error" onClick={handleRemove}>
+          <IconButton color="error" onClick={handleRemove}  >
             <CloseIcon />
           </IconButton>
         </Tooltip>
