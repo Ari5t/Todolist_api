@@ -1,73 +1,71 @@
-import { FC, useCallback, useEffect, useRef, useState } from 'react'
+import { FC, useCallback, useEffect, useRef, useState } from "react";
+import axios from "axios";
 
-import axios from 'axios'
+import MuiList from "@mui/material/List";
 
-import io from "socket.io-client";
+import { Form } from "./form";
+import { Item } from "./item";
+import { socket } from "../../modules/io";
 
-import MuiList from '@mui/material/List'
+export interface ListProps {}
 
-import { Form } from './form'
-import { Item } from './item'
-
-export interface ListProps { }
-
-type Itasks = {
+export interface Itasks {
   text: string;
   _id: number;
 }
 
 export const List: FC<ListProps> = () => {
-  const socket = io("http://localhost:3001/", { transports: ["websocket"] });
-  const [todos, setTodos] = useState<Itasks[]>([])
-  const addField = useRef<HTMLInputElement>(null)
+  const [todos, setTodos] = useState<Itasks[]>([]);
+  const addField = useRef<HTMLInputElement>(null);
 
   const handleLoad = useCallback(async () => {
-    const tasks = await (await axios.get(`/api/tasks`)).data
-    setTodos(tasks)
-  }, [])
+    const { data } = await axios.get(`http://localhost:3001/api/tasks`)
+
+    setTodos(data);
+  }, []);
 
   const handleAdd = useCallback(async (newText: string) => {
     await axios.post(`/api/task`, {
-      text: newText
-    })
+      text: newText,
+    });
+  }, []);
 
-    handleLoad()
-  }, [handleLoad])
+  const handleEdit = useCallback(
+    async (newText: string, id: number) => {
+      await axios.put(`/api/task/${id}`, {
+        text: newText,
+      });
 
-  const handleEdit = useCallback(async(newText: string, id: number) => {
-    await axios.put(`/api/task/${id}`, {
-      text: newText
-    })
+      handleLoad();
+      addField.current?.focus();
+    },
+    [handleLoad]
+  );
 
-    handleLoad()
-    addField.current?.focus()
-  }, [handleLoad])
+  const handleRemove = useCallback(
+    async (id: number, index: number) => {
+      const newTodos = [...todos]
+      newTodos.splice(index, 1)
+      setTodos(newTodos)
 
-  const handleRemove = useCallback(async(id: number) => {
-    await axios.delete(`/api/task/${id}`)
-    handleLoad()
-  }, [handleLoad])
-
-  useEffect(() =>{
-    socket.on("client:reload", () =>{
-      handleLoad()
-      console.log("200");
-    })
-  }, [socket, handleLoad])
-
+      await axios.delete(`http://localhost:3001/api/task/${id}`)
+    },
+    [todos, setTodos]
+  );
 
   useEffect(() => {
-    handleLoad()
-  }, [handleLoad])
+    handleLoad();
+  }, [handleLoad]);
 
   return (
     <MuiList>
       {/* @ts-ignore */}
       <Form onSave={handleAdd} ref={addField} />
-      {todos.map((task) => (
+      {todos.map((task, index) => (
         <Item
           key={`ToDo-${task.text}-${task._id}`}
           id={task._id}
+          index={index}
           onRemove={handleRemove}
           onSave={handleEdit}
         >
@@ -75,5 +73,5 @@ export const List: FC<ListProps> = () => {
         </Item>
       ))}
     </MuiList>
-  )
-}
+  );
+};

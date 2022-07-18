@@ -8,8 +8,6 @@ io.on('connection', socket => {
 
     socket_task.create(text)
 
-    console.log("200");
-
   })
 
   socket.on('task:update', async ({ id, text }) => {

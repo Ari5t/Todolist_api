@@ -14,13 +14,15 @@ import { useCallback } from 'react'
 export interface ItemProps {
   children: string
   id: number
+  index: number
 
-  onRemove: (id: number) => void
+  onRemove: (id: number, index: number) => void
   onSave: (text: string, id: number) => void
 }
 
 export const Item: FC<ItemProps> = ({
   children,
+  index,
   id,
 
   onRemove,
@@ -38,8 +40,8 @@ export const Item: FC<ItemProps> = ({
   const handleRemove = useCallback<MouseEventHandler<HTMLButtonElement>>(event => {
     event.stopPropagation()
 
-    onRemove(id)
-  }, [id, onRemove])
+    onRemove(id, index)
+  }, [id, index, onRemove])
 
   if (isEdit) {
     return (
