@@ -1,4 +1,7 @@
-const socket = io();
+const socket = io("/", {
+  transports: ["websocket"],
+  path: '/socket',
+})
 let btnDeletes = document.querySelectorAll(".delete");
 
 //create
@@ -7,7 +10,7 @@ const form = document.querySelector('form')
 form.addEventListener('submit', event => {
   event.preventDefault()
   const text = event.target.elements.text.value
-  if (text <= 0){
+  if (text <= 0) {
     return alert("Заполните поле с текстом")
   }
   socket.emit('task:create', { text })

@@ -1,74 +1,75 @@
-import { FC, useCallback, useEffect, useRef, useState } from "react";
-import axios from "axios";
+import { FC, useCallback, useEffect, useState } from 'react'
+import axios from 'axios'
 
-import MuiList from "@mui/material/List";
+import MuiList from '@mui/material/List'
 
-import { Form } from "./form";
-import { Item } from "./item";
-import { socket } from "../../modules/io";
+import { Form } from './form'
+import { Item } from './item'
 
-export interface ListProps {}
+import { socket } from '../../modules/io'
+import { useSocket } from '../../common/hooks/useSocket'
+
+export interface ListProps { }
 
 export interface Itasks {
-  text: string;
-  _id: number;
+  text: string
+  _id: number
 }
 
 export const List: FC<ListProps> = () => {
-  const [todos, setTodos] = useState<Itasks[]>([]);
-  const addField = useRef<HTMLInputElement>(null);
+  const [todos, setTodos] = useState<Itasks[]>([])
 
   const handleLoad = useCallback(async () => {
-    const { data } = await axios.get(`http://localhost:3001/api/tasks`);
+    const { data } = await axios.get(`/api/tasks`)
 
-    setTodos(data);
-  }, []);
+    setTodos(data)
+  }, [])
 
   const handleAdd = useCallback(async (newText: string) => {
-    socket.emit("task:create", { text: newText });
-  }, []);
+    socket.emit("task:create", { text: newText })
+  }, [])
 
   const handleEdit = useCallback(async (newText: string, id: number) => {
-    socket.emit("task:update", { id: id, text: newText });
-    // addField.current?.focus();
-  }, []);
+    socket.emit("task:update", { id: id, text: newText })
+  }, [])
 
   const handleRemove = useCallback(async (id: number) => {
-    socket.emit("task:delete", { id: id });
-  }, []);
+    socket.emit("task:delete", { id: id })
+  }, [])
 
   useEffect(() => {
-    handleLoad();
-  }, [handleLoad]);
+    handleLoad()
+  }, [handleLoad])
 
-  useEffect(() => {
-    socket.on("task:created", (data) => {
-      setTodos([...todos, { _id: data.id, text: data.text }]);
-    });
+  useSocket("task:created", (data) => {
+    setTodos([...todos, { _id: data.id, text: data.text }])
+  }, [todos])
 
-    socket.on("task:updated", (data) => {
-      const todoIndex = todos.map((todo) => todo._id).indexOf(data.id);
+  useSocket("task:updated", (data) => {
+    const todoIndex = todos.map((todo) => todo._id).indexOf(data.id)
 
-      const newList = [...todos];
-      newList[todoIndex] = { _id: data.id, text: data.text };
+    const newList = [...todos]
+    newList[todoIndex] = { _id: data.id, text: data.text }
 
-      setTodos(newList);
-    });
+    setTodos(newList)
+  }, [todos])
 
-    socket.on("task:deleted", (id) => {
-      const todoIndex = todos.map((todo) => todo._id).indexOf(id);
+  useSocket("task:deleted", ({ id }) => {
+    const todoIndex = todos.findIndex(todo => todo._id === id)
 
-      const newList = [...todos];
-      newList.splice(todoIndex, 1);
+    if (todoIndex === -1) {
+      return
+    }
 
-      setTodos(newList);
-    });
-  }, [socket, todos, setTodos]);
+    const newList = [...todos]
+    newList.splice(todoIndex, 1)
+
+    setTodos(newList)
+  }, [todos])
 
   return (
     <MuiList>
-      {/* @ts-ignore */}
-      <Form onSave={handleAdd} ref={addField} />
+      <Form onSave={handleAdd} />
       {todos.map((task) => (
         <Item
           key={`ToDo-${task.text}-${task._id}`}
@@ -80,5 +81,5 @@ export const List: FC<ListProps> = () => {
         </Item>
       ))}
     </MuiList>
-  );
-};
+  )
+}

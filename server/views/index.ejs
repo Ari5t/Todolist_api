@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ua">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <title>Список дел</title>
     <link rel="stylesheet" href="/styles/style.css">
 </head>
+
 <body>
     <h1>Список дел</h1>
     <form method="post" action="/">
@@ -14,16 +16,21 @@
         <input type="submit" value="Отправить">
     </form>
     <ul id="ul">
-        <% tasks.forEach( details => { %>
-          <li id="<%= details._id %>"><div>
-            <span data-task-id="<%= details._id %>"><%= details.text %></span>
-            <a href="/edit/<%= details._id %>"><span>Edit</span></a>
-            <button data-id="<%= details._id %>" class="delete">Delete</button>
-        </div></li>
-            
-        <% }) %>
+        <% tasks.forEach( details=> { %>
+            <li id="<%= details._id %>">
+                <div>
+                    <span data-task-id="<%= details._id %>">
+                        <%= details.text %>
+                    </span>
+                    <a href="/edit/<%= details._id %>"><span>Edit</span></a>
+                    <button data-id="<%= details._id %>" class="delete">Delete</button>
+                </div>
+            </li>
+
+            <% }) %>
     </ul>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/scripts/socket_index.js"></script>
 </body>
+
 </html>

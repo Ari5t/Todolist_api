@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ua">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <title>Изменить "<%= tasks.text%>"</title>
     <link rel="stylesheet" href="/styles/style.css">
 </head>
+
 <body>
     <h1>Изменить "<%= tasks.text%>"</h1>
     <form method="post" action="/edit/<%= tasks.id %>?_method=PUT">
@@ -19,4 +21,5 @@
     <script>console.log(tasks)</script>
     <script src="/scripts/socket_edit.js"></script>
 </body>
+
 </html>
