@@ -19,53 +19,60 @@ export const List: FC<ListProps> = () => {
   const addField = useRef<HTMLInputElement>(null);
 
   const handleLoad = useCallback(async () => {
-    const { data } = await axios.get(`http://localhost:3001/api/tasks`)
+    const { data } = await axios.get(`http://localhost:3001/api/tasks`);
 
     setTodos(data);
   }, []);
 
   const handleAdd = useCallback(async (newText: string) => {
-    await axios.post(`/api/task`, {
-      text: newText,
-    });
+    socket.emit("task:create", { text: newText });
   }, []);
 
-  const handleEdit = useCallback(
-    async (newText: string, id: number) => {
-      await axios.put(`/api/task/${id}`, {
-        text: newText,
-      });
+  const handleEdit = useCallback(async (newText: string, id: number) => {
+    socket.emit("task:update", { id: id, text: newText });
+    // addField.current?.focus();
+  }, []);
 
-      handleLoad();
-      addField.current?.focus();
-    },
-    [handleLoad]
-  );
-
-  const handleRemove = useCallback(
-    async (id: number, index: number) => {
-      const newTodos = [...todos]
-      newTodos.splice(index, 1)
-      setTodos(newTodos)
-
-      await axios.delete(`http://localhost:3001/api/task/${id}`)
-    },
-    [todos, setTodos]
-  );
+  const handleRemove = useCallback(async (id: number) => {
+    socket.emit("task:delete", { id: id });
+  }, []);
 
   useEffect(() => {
     handleLoad();
   }, [handleLoad]);
 
+  useEffect(() => {
+    socket.on("task:created", (data) => {
+      setTodos([...todos, { _id: data.id, text: data.text }]);
+    });
+
+    socket.on("task:updated", (data) => {
+      const todoIndex = todos.map((todo) => todo._id).indexOf(data.id);
+
+      const newList = [...todos];
+      newList[todoIndex] = { _id: data.id, text: data.text };
+
+      setTodos(newList);
+    });
+
+    socket.on("task:deleted", (id) => {
+      const todoIndex = todos.map((todo) => todo._id).indexOf(id);
+
+      const newList = [...todos];
+      newList.splice(todoIndex, 1);
+
+      setTodos(newList);
+    });
+  }, [socket, todos, setTodos]);
+
   return (
     <MuiList>
       {/* @ts-ignore */}
       <Form onSave={handleAdd} ref={addField} />
-      {todos.map((task, index) => (
+      {todos.map((task) => (
         <Item
           key={`ToDo-${task.text}-${task._id}`}
           id={task._id}
-          index={index}
           onRemove={handleRemove}
           onSave={handleEdit}
         >

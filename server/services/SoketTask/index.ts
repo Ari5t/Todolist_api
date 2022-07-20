@@ -14,8 +14,6 @@ class SoketTask implements ISoketTask{
 
     socket.emit("task:created", { id, text });
 
-    socket.emit('client:reload')
-
     return task
   }
 
@@ -23,8 +21,6 @@ class SoketTask implements ISoketTask{
     const task = await Task.findByIdAndUpdate(id, { text }, { new: true })
 
     socket.emit('task:updated', { id, text })
-
-    socket.emit('client:reload')
 
     return task
   }
@@ -34,7 +30,6 @@ class SoketTask implements ISoketTask{
 
     socket.emit('task:deleted', { id })
 
-    socket.emit('client:reload')
   }
 }
 
