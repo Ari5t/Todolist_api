@@ -10,6 +10,7 @@ import Tooltip from '@mui/material/Tooltip'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import { useCallback } from 'react'
+import { useNavigate } from 'react-router'
 
 export interface ItemProps {
   children: string
@@ -26,14 +27,23 @@ export const Item: FC<ItemProps> = ({
   onRemove,
   onSave,
 }) => {
+  const navigate = useNavigate()
+
   const [isEdit, setIsEdit] = useState(false)
-  const handleEdit = useCallback(() => setIsEdit(true), [])
-  const handleCancel = useCallback(() => setIsEdit(false), [])
+
+  const handleEdit = useCallback(() => {
+    navigate(`/edit/${id}`)
+  }, [id, navigate])
+  
+  const handleCancel = useCallback(() => {
+    navigate(`/`)
+  }, [navigate])
 
   const handleSave = useCallback((text: string) => {
     onSave(text, id)
     setIsEdit(false)
-  }, [id, onSave])
+    navigate(`/`)
+  }, [id, onSave, navigate])
 
   const handleRemove = useCallback<MouseEventHandler<HTMLButtonElement>>(event => {
     event.stopPropagation()
