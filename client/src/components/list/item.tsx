@@ -52,6 +52,8 @@ export const Item: FC<ItemProps> = ({
     onRemove(id)
   }, [id, onRemove])
 
+
+  // *Хорошая ли практика???
   useMemo(()=>{
     if (`${id}` === params.taskId){
       setIsEdit(true)
@@ -59,6 +61,7 @@ export const Item: FC<ItemProps> = ({
       setIsEdit(false)
     }
   }, [id, params.taskId])
+  // *
 
   if (isEdit) {
     return (
