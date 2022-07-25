@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler, useState } from 'react'
+import { FC, MouseEventHandler, useMemo, useState } from 'react'
 
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
@@ -10,7 +10,7 @@ import Tooltip from '@mui/material/Tooltip'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import { useCallback } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 
 export interface ItemProps {
   children: string
@@ -28,6 +28,7 @@ export const Item: FC<ItemProps> = ({
   onSave,
 }) => {
   const navigate = useNavigate()
+  const params = useParams()
 
   const [isEdit, setIsEdit] = useState(false)
 
@@ -50,6 +51,14 @@ export const Item: FC<ItemProps> = ({
     
     onRemove(id)
   }, [id, onRemove])
+
+  useMemo(()=>{
+    if (`${id}` === params.taskId){
+      setIsEdit(true)
+    } else{
+      setIsEdit(false)
+    }
+  }, [id, params.taskId])
 
   if (isEdit) {
     return (
