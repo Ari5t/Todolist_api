@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 
-import { socket } from "../../modules/io";
+import { socket } from "../../modules/io"
 
 type Listener = (...args: any[]) => void
 

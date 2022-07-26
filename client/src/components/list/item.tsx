@@ -14,10 +14,10 @@ import { useNavigate, useParams } from 'react-router'
 
 export interface ItemProps {
   children: string
-  id: number
+  id: string
 
-  onRemove: (id: number) => void
-  onSave: (text: string, id: number) => void
+  onRemove: (id: string) => void
+  onSave: (text: string, id: string) => void
 }
 
 export const Item: FC<ItemProps> = ({
@@ -30,7 +30,7 @@ export const Item: FC<ItemProps> = ({
   const navigate = useNavigate()
   const params = useParams()
 
-  const [isEdit, setIsEdit] = useState(false)
+  const isEdit = `${id}` === params.taskId
 
   const handleEdit = useCallback(() => {
     navigate(`/edit/${id}`)
@@ -42,7 +42,6 @@ export const Item: FC<ItemProps> = ({
 
   const handleSave = useCallback((text: string) => {
     onSave(text, id)
-    setIsEdit(false)
     navigate(`/`)
   }, [id, onSave, navigate])
 
@@ -51,17 +50,6 @@ export const Item: FC<ItemProps> = ({
     
     onRemove(id)
   }, [id, onRemove])
-
-
-  // *Хорошая ли практика???
-  useMemo(()=>{
-    if (`${id}` === params.taskId){
-      setIsEdit(true)
-    } else{
-      setIsEdit(false)
-    }
-  }, [id, params.taskId])
-  // *
 
   if (isEdit) {
     return (
