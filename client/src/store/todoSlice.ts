@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import axios from 'axios'
 import type { RootState } from '.'
 
 export interface Todo {
@@ -20,15 +21,36 @@ export const todoSlice = createSlice({
   name: NAME,
   initialState: INITIAL_STATE,
   reducers: {
-    'add-Task': (state, action: PayloadAction<Todo>) => {
+    loadTasks: (state, action: PayloadAction<Todo[]>) => {
+      state.todos = action.payload
+    },
+    'task:created': (state, action: PayloadAction<Todo>) => {
       state.todos = [...state.todos, action.payload]
     },
-    editTask: (state, action) => {},
-    removeTask: (state, action) => {},
+    'task:updated': (state, action: PayloadAction<Todo>) => {
+      const todoIndex = state.todos.map((todo) => todo._id).indexOf(action.payload._id)
+
+      state.todos[todoIndex] = { _id: action.payload._id, text: action.payload.text }
+    },
+    'task:deleted': (state, action: PayloadAction<{ _id: string }>) => {
+      const todoIndex = state.todos.findIndex((todo) => todo._id === action.payload._id)
+
+      if (todoIndex === -1) {
+        return
+      }
+
+      state.todos.splice(todoIndex, 1)
+    },
   },
 })
 
-export const { editTask, removeTask } = todoSlice.actions
+export const getTodos = () => async (dispatch: any) => {
+  const { data } = await axios.get(`/api/tasks`)
+
+  dispatch(loadTasks(data))
+}
+
+export const { loadTasks } = todoSlice.actions
 
 export const TODOS = (state: RootState): State['todos'] => state.todo.todos
 

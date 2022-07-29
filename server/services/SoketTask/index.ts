@@ -1,35 +1,35 @@
-import Task from "../../models/task";
-import io from "../../server/io";
+import Task from '../../models/task'
+import io from '../../server/io'
 
-import type { ISoketTask } from "./types" 
+import type { ISoketTask } from './types'
 
 const socket = io.sockets
 
-class SoketTask implements ISoketTask{
+class SoketTask implements ISoketTask {
   public async create(text: string): Promise<void> {
-    const task = new Task({ text });
-    const id = task._id;
+    const task = new Task({ text })
+    const _id = task._id
 
-    await task.save();
+    await task.save()
 
-    socket.emit("task:created", { id, text });
-
-    return task
-  }
-
-  public async update(text: string, id: string): Promise<void>{
-    const task = await Task.findByIdAndUpdate(id, { text }, { new: true })
-
-    socket.emit('task:updated', { id, text })
+    socket.emit('task:created', { _id, text })
 
     return task
   }
 
-  public async delete(id: string): Promise<void> {
-    await Task.findByIdAndDelete(id)
+  public async update(text: string, _id: string): Promise<void> {
+    const task = await Task.findByIdAndUpdate(_id, { text }, { new: true })
 
-    socket.emit('task:deleted', { id })
+    socket.emit('task:updated', { _id, text })
 
+    return task
+  }
+
+  public async delete(_id: string): Promise<void> {
+    await Task.findByIdAndDelete(_id)
+    
+
+    socket.emit('task:deleted', { _id })
   }
 }
 

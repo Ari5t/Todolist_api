@@ -10,15 +10,15 @@ io.on('connection', socket => {
 
   })
 
-  socket.on('task:update', async ({ id, text }) => {
+  socket.on('task:update', async ({ _id, text }) => {
 
-    socket_task.update(text, id)
+    socket_task.update(text, _id)
 
   })
 
-  socket.on('task:delete', async ({ id }) => {
+  socket.on('task:delete', async ({ _id }) => {
 
-    socket_task.delete(id)
+    socket_task.delete(_id)
 
   })
 })

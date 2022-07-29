@@ -12,13 +12,12 @@
 <body>
     <h1>Изменить "<%= tasks.text%>"</h1>
     <form method="post" action="/edit/<%= tasks.id %>?_method=PUT">
-        <input type="text" value="<%= tasks.id %>" name="id" hidden>
+        <input type="text" value="<%= tasks._id %>" name="_id" hidden>
         <input type="text" value="<%= tasks.text %>" name="text">
         <input type="submit" value="Submit">
         <a href="/">Cancel</a>
     </form>
     <script src="/socket.io/socket.io.js"></script>
-    <script>console.log(tasks)</script>
     <script src="/scripts/socket_edit.js"></script>
 </body>
 
