@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import axios from 'axios'
 import type { RootState } from '.'
 
 export interface Todo {
@@ -43,12 +42,6 @@ export const todoSlice = createSlice({
     },
   },
 })
-
-export const getTodos = () => async (dispatch: any) => {
-  const { data } = await axios.get(`/api/tasks`)
-
-  dispatch(loadTasks(data))
-}
 
 export const { loadTasks } = todoSlice.actions
 

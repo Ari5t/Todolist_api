@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect } from 'react'
+import { FC, useCallback } from 'react'
 
 import MuiList from '@mui/material/List'
 
@@ -8,14 +8,16 @@ import { Item } from './item'
 import { socket } from '../../modules/io'
 // import { useSocket } from '../../common/hooks/useSocket'
 import { useSelector } from 'react-redux'
-import { getTodos, TODOS } from '../../store/todoSlice'
-import { useAppDispatch } from '../../store'
+import { TODOS } from '../../store/todoSlice'
+import { useGetTasksQuery } from '../../store/fetchTasksApi'
+
 
 export interface ListProps {}
 
 export const List: FC<ListProps> = () => {
-  const dispatch = useAppDispatch()
   const todos = useSelector(TODOS)
+
+  const { data, error, isLoading } = useGetTasksQuery("")
 
   const handleAdd = useCallback(async (newText: string) => {
     socket.emit('task:create', { text: newText })
@@ -28,10 +30,6 @@ export const List: FC<ListProps> = () => {
   const handleRemove = useCallback(async (id: string) => {
     socket.emit('task:delete', { _id: id })
   }, [])
-
-  useEffect(() => {
-    dispatch(getTodos())
-  }, [dispatch])
 
   return (
     <MuiList>

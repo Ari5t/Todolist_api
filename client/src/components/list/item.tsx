@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler, useMemo, useState } from 'react'
+import { FC, MouseEventHandler } from 'react'
 
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
@@ -35,26 +35,30 @@ export const Item: FC<ItemProps> = ({
   const handleEdit = useCallback(() => {
     navigate(`/edit/${id}`)
   }, [id, navigate])
-  
+
   const handleCancel = useCallback(() => {
     navigate(`/`)
   }, [navigate])
 
-  const handleSave = useCallback((text: string) => {
-    onSave(text, id)
-    navigate(`/`)
-  }, [id, onSave, navigate])
+  const handleSave = useCallback(
+    (text: string) => {
+      onSave(text, id)
+      navigate(`/`)
+    },
+    [id, onSave, navigate]
+  )
 
-  const handleRemove = useCallback<MouseEventHandler<HTMLButtonElement>>(event => {
-    event.stopPropagation()
-    
-    onRemove(id)
-  }, [id, onRemove])
+  const handleRemove = useCallback<MouseEventHandler<HTMLButtonElement>>(
+    (event) => {
+      event.stopPropagation()
+
+      onRemove(id)
+    },
+    [id, onRemove]
+  )
 
   if (isEdit) {
-    return (
-      <Form text={children} onCancel={handleCancel} onSave={handleSave} edit />
-    )
+    return <Form text={children} onCancel={handleCancel} onSave={handleSave} edit />
   }
 
   return (
@@ -62,7 +66,7 @@ export const Item: FC<ItemProps> = ({
       <ListItemButton onClick={handleEdit}>
         <ListItemText primary={children} />
         <Tooltip title="Remove">
-          <IconButton color="error" onClick={handleRemove}  >
+          <IconButton color="error" onClick={handleRemove}>
             <CloseIcon />
           </IconButton>
         </Tooltip>
