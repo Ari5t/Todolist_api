@@ -17,11 +17,40 @@ export const TasksApi = createApi({
           })
         }
 
+        const listenerUpdate = (data: Todo) => {
+          updateCachedData((draft) => {
+            const todoIndex = draft.map((todo) => todo._id).indexOf(data._id)
+          
+            draft[todoIndex] = data
+          })
+        }
+        
+        const listenerDelete = (data: Todo) => {
+          updateCachedData((draft) => {
+            const todoIndex = draft.findIndex((todo) => todo._id === data._id)
+
+            if (todoIndex === -1) {
+              return
+            }
+      
+            draft.splice(todoIndex, 1)
+          })
+        }
+
         socket.on('task:created', listenerCreate)
+
+        socket.on('task:updated', listenerUpdate)
+
+        socket.on('task:deleted', listenerDelete)
 
         await cacheEntryRemoved
 
         socket.off('task:created', listenerCreate)
+
+        socket.off('task:updated', listenerUpdate)
+
+        socket.off('task:deleted', listenerDelete)
+        
       },
     }),
   }),

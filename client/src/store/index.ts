@@ -19,9 +19,9 @@ export type AppDispatch = typeof store.dispatch
 
 export const useAppDispatch = (): AppDispatch => useDispatch()
 
-socket.onAny((event, data) => {
+// socket.onAny((event, data) => {
   
-    // @ts-ignore
-  store.dispatch(todoSlice.actions[event](data))
+//     // @ts-ignore
+//   store.dispatch(todoSlice.actions[event](data))
 
-})
+// })
